@@ -1,0 +1,16 @@
+{
+  "name": "@kanav5753/otp-handler",
+  "version": "1.0.0",
+  "description": "it generates otp and verify it",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "otp",
+    "otp-handler",
+    "otp-generator"
+  ],
+  "author": "kanav",
+  "license": "ISC"
+}
