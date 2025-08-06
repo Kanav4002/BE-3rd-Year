@@ -1,7 +1,7 @@
 const express = require("express");
 const connectDB = require("./db/connectDb");
 const app = express();
-const PORT = 3000;
+const PORT = 4000;
 require("dotenv").config();
 const path = require("path");
 
@@ -16,7 +16,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/todo", todoRouter);
 
 app.get("/", (req, res) => {
-  
+
 });
 
 connectDB().then(() => {
