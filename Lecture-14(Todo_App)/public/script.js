@@ -2,23 +2,43 @@ const filters = document.getElementById("filters");
 const form = document.getElementById("task-form");
 const todosContainer = document.getElementById("todos-container");
 
+// Dynamic elements are never selected
+
 getAllTodos(); // get todos and renders it when js loads
+
+todosContainer.addEventListener("click", async(e) => {
+  const btnClass = e.target.className;
+  if (btnClass != 'delete' && btnClass != 'status') return;
+
+  const todoId = e.target.parentElement.id;
+
+  if (btnClass == "delete") {
+    const res = await axios.delete(`http://localhost:4000/todo/delete/${todoId}`);
+  }
+
+  if (btnClass == "status") {
+    const res = await axios.put(`http://localhost:4000/todo/update/${todoId}`);
+  }
+  getAllTodos();
+})
 
 async function getAllTodos() {
   const res = await axios.get("http://localhost:4000/todo/all");
   const todos = res.data.todos;
-  renderTools(todos);
+  renderTodos(todos);
 }
 
-function renderTools(todos) {
+function renderTodos(todos) {
+  todosContainer.innerHTML = "";
   for (let todo of todos) {
     const div = document.createElement("div");
     div.className = "todo";
     div.innerHTML = `<h3>${todo.task}</h3>
-    <div>
+    <div id="${todo._id}">
       <button class="status">${todo.status ? "Undo" : "Completed"}</button>
       <button class="delete">Delete</button>
     </div>`
+    // todosContainer.innerHTML = ""; // this is logically wrong as it will clear every time we add a todo
     todosContainer.prepend(div);
   }
 }
@@ -30,7 +50,8 @@ form.addEventListener("submit", async (e) => {
   const res = await axios.post("http://localhost:4000/todo/create", {
     task: task
   });
-
+  input.value = "";
+  getAllTodos(); // re-render the UI with latest todos
 })
 
 filters.addEventListener("click", (e) => {
