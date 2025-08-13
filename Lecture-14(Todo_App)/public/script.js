@@ -54,20 +54,33 @@ form.addEventListener("submit", async (e) => {
   getAllTodos(); // re-render the UI with latest todos
 })
 
+async function getFilterTodos(filterName) {
+  let res = await axios.get("http://localhost:4000/todo/filter", {
+    params:{
+      filterName: filterName
+    }
+  })
+  let todos = res.data.todos;
+  renderTodos(todos);
+}
+
 filters.addEventListener("click", (e) => {
   const btnId = e.target.id;
   const allBtns = filters.children;
   if (btnId == "all") {
+    getFilterTodos("all");
     e.target.className = "active";
     allBtns[1].className = "";
     allBtns[2].className = "";
   }
   else if (btnId == "active") {
+    getFilterTodos("active");
     e.target.className = "active";
     allBtns[0].className = "";
     allBtns[2].className = "";
   }
   else if (btnId == "completed") {
+    getFilterTodos("completed");
     e.target.className = "active";
     allBtns[0].className = "";
     allBtns[1].className = "";
