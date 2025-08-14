@@ -1,14 +1,19 @@
 const express = require("express");
 const connectDB = require("./db/connectDb")
 const app = express();
-const port = 4000;
+const port = 3000;
 require("dotenv").config();
 const path = require("path");
 
-app.use(express.json);
+// routers
+const authRouter = require("./routes/auth.route");
+
+app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 app.use(express.static(path.join(__dirname, "public")));
 
+// routes
+app.use("/auth", authRouter);
 app.get("/", (req, res) => { });
 
 connectDB().then(() => {
