@@ -62,4 +62,13 @@ router.get("/filter",async (req,res)=>{
   }
 })
 
+router.delete("/clear", async(req, res) => {
+  try {
+    await Todo.deleteMany({ status : true});
+    res.status(200).json({message: "All completed todos are cleared successfully"});
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
+})
+
 module.exports = router;

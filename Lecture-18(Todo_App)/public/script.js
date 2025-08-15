@@ -1,8 +1,14 @@
 const filtersContainer = document.getElementById("filters");
 const form = document.getElementById("task-form");
 const todoContainer = document.getElementById("todos-Container");
+const clearBtn = document.getElementById("clear-btn");
 
 getAllTodos(); // get todos and renders it when js loads
+
+clearBtn.addEventListener("click", async(e) => {
+  await axios.delete("http://localhost:4000/todo/clear");
+  getAllTodos();
+})
 
 todoContainer.addEventListener("click",async (e)=>{
   const btnClass = e.target.className;
