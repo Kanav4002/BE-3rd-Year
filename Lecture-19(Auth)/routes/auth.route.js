@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
+const jwt = require("jsonwebtoken");
 /*
   hashPass: encrypted password
   password: original password
@@ -27,6 +28,21 @@ router.post("/signup", async(req, res) => {
   }
 });
 
+/*
+  id: user._id, name: user.name -> paylod : current user basic info
+  process.env.JWT_SECRET -> secret : signature which is added to token (encrypted)
+  {expressIn:  '1h', algorithm: 'RS256'} : optionals
+
+
+  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9. -> headers : algorithm
+  
+  -> Payload (encrypted) : easily decodeable
+  eyJpZCI6IjY4OWQ2NDRjY2QxNjZlYjNkYWZiNzVjNSIsIm5hbWUiOiJLYW5hdiIsImlhdCI6MTc1NTQ5MTk4OSwiZXhwIjoxNzU1NDk1NTg5fQ.  
+  
+  -> Signature : encrypted form of JWT secret (not decodeable)
+  MUJpgpg5-MJmJNnls5bT-GlAazVKvYDhMunyA7EmDQQ
+*/
+
 router.post("/login", async(req, res) => {
   try {
     const {email, password} = req.body;
@@ -41,7 +57,22 @@ router.post("/login", async(req, res) => {
     if(!isMatched) {
       throw new Error("Invalid email or password");
     }
-    res.status(200).json({message: "You are logged in"});
+    const token = jwt.sign({id: user._id, name: user.name}, process.env.JWT_SECRET,
+      {expiresIn:  '1h', algorithm: 'HS256'}
+    );
+    res.status(200).json({message: "You are logged in", token: token});
+  } catch (error) {
+    res.status(400).json({message: error.message});
+  }
+})
+
+router.get("/check", async(req, res) => {
+  try {
+    const authorization = req.headers.authorization;
+    const token = authorization.split(" ")[1];
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    res.status(200).json({user: payload});
+    // res.send("hello");
   } catch (error) {
     res.status(400).json({message: error.message});
   }
