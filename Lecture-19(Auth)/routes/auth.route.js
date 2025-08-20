@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
+const verifyAuth = require("../middleware/auth.middleware");
 /*
   hashPass: encrypted password
   password: original password
@@ -36,7 +37,7 @@ router.post("/signup", async(req, res) => {
 
   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9. -> headers : algorithm
   
-  -> Payload (encrypted) : easily decodeable
+  -> Payload (encrypted form of data) : easily decodeable
   eyJpZCI6IjY4OWQ2NDRjY2QxNjZlYjNkYWZiNzVjNSIsIm5hbWUiOiJLYW5hdiIsImlhdCI6MTc1NTQ5MTk4OSwiZXhwIjoxNzU1NDk1NTg5fQ.  
   
   -> Signature : encrypted form of JWT secret (not decodeable)
@@ -60,19 +61,17 @@ router.post("/login", async(req, res) => {
     const token = jwt.sign({id: user._id, name: user.name}, process.env.JWT_SECRET,
       {expiresIn:  '1h', algorithm: 'HS256'}
     );
+    res.cookie("token", token, {httpOnly: true, secure: true, maxAge: 24*60*60*1000});
     res.status(200).json({message: "You are logged in", token: token});
   } catch (error) {
     res.status(400).json({message: error.message});
   }
 })
 
-router.get("/check", async(req, res) => {
+router.get("/check", verifyAuth, async(req, res) => {
   try {
-    const authorization = req.headers.authorization;
-    const token = authorization.split(" ")[1];
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    res.status(200).json({user: payload});
-    // res.send("hello");
+    const userData = req.user;
+    res.status(200).json({user: userData});
   } catch (error) {
     res.status(400).json({message: error.message});
   }
