@@ -1,23 +1,24 @@
 const express = require("express");
-const connectDB = require("./db/connectDb")
+const connectDB = require("./db/connectDb");
 const app = express();
-const port = 3000;
+const PORT = 4000;
 require("dotenv").config();
-const path = require("path");
-
 // routers
-const authRouter = require("./routes/auth.route");
+const authRouter = require("./routes/auth.route")
+const productRouter = require("./routes/product.route");
+const userRouter = require("./routes/user.route");
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
 
 // routes
-app.use("/auth", authRouter);
-app.get("/", (req, res) => { });
+app.use("/auth",authRouter);
+app.use("/product",productRouter);
+app.use("/user",userRouter);
+app.get("/", (req, res) => {	});
 
-connectDB().then(() => {
-  app.listen(port, () => console.log(`Server is running on http://localhost:${port}`));
-}).catch((err) => {
-  console.log(err);
-});
+
+connectDB().then(()=>{
+  app.listen(PORT, () => console.log("Server running on port " + PORT));
+}).catch((error)=>console.log(error));
+
