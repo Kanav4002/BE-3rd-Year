@@ -17,7 +17,6 @@ app.use("/product",productRouter);
 app.use("/user",userRouter);
 app.get("/", (req, res) => {	});
 
-
 connectDB().then(()=>{
   app.listen(PORT, () => console.log("Server running on port " + PORT));
 }).catch((error)=>console.log(error));
