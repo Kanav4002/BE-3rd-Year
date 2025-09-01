@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      transition: transform 0.3s ease;
+    }
+
+    .product-card:hover img {
+      transform: scale(1.03);
+    }
+
+    .product-card h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      text-transform: capitalize;
+    }
+
+    .product-card h3 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(45deg, #e74c3c, #f39c12);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+
+    .product-card p {
+      font-size: 1.1rem;
+      color: #7f8c8d;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      text-align: left;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+      border-left: 4px solid #667eea;
+    }
+
+    button {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      min-width: 150px;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+      background: linear-gradient(45deg, #764ba2, #667eea);
+    }
+
+    button:active {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    button:nth-child(6) {
+      background: linear-gradient(45deg, #f39c12, #e67e22);
+      box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+    }
+
+    button:nth-child(6):hover {
+      background: linear-gradient(45deg, #e67e22, #f39c12);
+      box-shadow: 0 10px 25px rgba(243, 156, 18, 0.4);
+    }
+
+    button:nth-child(7) {
+      background: linear-gradient(45deg, #2c3e50, #34495e);
+      box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
+    }
+
+    button:nth-child(7):hover {
+      background: linear-gradient(45deg, #34495e, #2c3e50);
+      box-shadow: 0 10px 25px rgba(44, 62, 80, 0.4);
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+      
+      .product-card {
+        padding: 30px 25px;
+        margin: 10px;
+      }
+      
+      .product-card img {
+        height: 250px;
+      }
+      
+      .product-card h2 {
+        font-size: 1.7rem;
+      }
+      
+      .product-card h3 {
+        font-size: 1.5rem;
+      }
+      
+      button {
+        padding: 12px 25px;
+        font-size: 1rem;
+        min-width: 120px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .product-card {
+        padding: 25px 20px;
+      }
+      
+      .product-card img {
+        height: 200px;
+      }
+      
+      .product-card h2 {
+        font-size: 1.5rem;
+      }
+      
+      .product-card h3 {
+        font-size: 1.3rem;
+      }
+      
+      .product-card p {
+        font-size: 1rem;
+        padding: 12px;
+      }
+      
+      button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        min-width: 100px;
+        margin: 5px;
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div id="<%= product._id %>" class="product-card">
+    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="<%= product.name %>">
+    <h2><%= product.name %></h2>
+    <h3><%= product.price %></h3>
+    <p><%= product.description %></p>
+    <button onclick="buyNormal()">Buy</button>
+    <button onclick="buyGold()">Buy with Gold (10% Off)</button>
+    <button onclick="buyPlatinum()">Buy with Platinum (20% Off)</button>
+  </div>
+
+  <script>
+    const div = document.getElementByTagName("div")[0];
+    const productId = div.id;
+    async function buyNormal() {
+      try {
+        // withCredentials : sends cookies
+        const res = await axios.post(`/product/buy/${productId}`, {}, {withCredentials: true});
+        alert("Product bought successfully");
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+    async function buyGold() {
+      try {
+        const goldRes = await axios.get(`/product/gold/discount/${productId}`, {withCredentials: true});
+        const newPrice = goldRes.data.discountedPrice;
+        // sending the discounted price to buy product
+        const res = await axios.post(`/product/buy/${productId}`, {price: newPrice}, {withCredentials: true});
+        alert("Product bought successfully");
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+    async function buyPlatinum() {
+      try {
+        const platinumRes = await axios.get(`/product/platinum/discount/${productId}`, {withCredentials: true});
+        const newPrice = platinumRes.data.discountedPrice;
+        const res = await axios.post(`/product/buy/${productId}`, {price: newPrice}, {withCredentials: true});
+        alert("Product bought successfully");
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+  </script>
+</body>
+</html>

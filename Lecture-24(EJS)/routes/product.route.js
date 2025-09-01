@@ -2,8 +2,18 @@ const express = require("express");
 const Product = require("../models/product.model");
 const User = require("../models/user.model");
 const verifyAuth = require("../middleware/auth.middleware");
-const { goldUserVerify, platinumUserVerify } = require("../middleware/premuim.middleware");
+const { goldUserVerify, platinumUserVerify } = require("../middleware/premium.middleware");
 const router = express.Router();
+
+router.get("/:id", async(req, res) => {
+  try {
+    const {id} = req.params;
+    const product = await Product.findById(id);
+    res.render("singleProduct", {product});
+  } catch (error) {
+    res.status(400).json({message:error.message});
+  }
+})
 
 router.get("/create",async(req,res)=>{
   const dummyProducts = [
