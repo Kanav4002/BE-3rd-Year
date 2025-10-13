@@ -18,4 +18,52 @@ router.post("/create", async(req, res) => {
   }
 });
 
+router.get("/all", async (req, res) => {
+  try {
+    // const posts = await prisma.post.findMany();
+    // const posts = await prisma.post.findMany({
+    //   include: { author : true } 
+    // });
+    // const posts = await prisma.post.findMany({
+    //   include: { 
+    //     author: true,
+    //     comments: true 
+    //   } 
+    // });
+    const allPosts = await prisma.post.findMany({
+      include: { 
+        author: true,
+        comments: { 
+          include : { 
+            author: true 
+          }
+        }
+      } 
+    });
+    res.status(200).json({ allPosts });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// pagenation || infinite scroll
+router.get("/pagenation", async (req, res) => {
+  try {
+    // if we don't get page value default will be 1
+    const { page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+    const posts = await prisma.post.findMany({
+      skip : skip,
+      take : parseInt(limit),
+      include: { 
+        author: true,
+        comments: true 
+      }
+    });
+    res.status(200).json({ posts });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
 module.exports = router;
