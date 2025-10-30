@@ -13,9 +13,17 @@
     const socket = io();
     socket.on("connection", () => {
     console.log("client side connection", socket.id);
-      socket.on("disconnect", () => {
-        console.log("user 1 disconnected");
-      })
+    });
+
+    socket.on("notice", (data) => {
+      console.log(data);
+    });
+
+    client.emit("notice", { message: "this is the data send by server"});
+
+    client.on("client-event", (data1, data2, data3) => {
+      
+      console.log(data1, data2, data3);
     });
   </script>
 </body>

@@ -15,6 +15,8 @@ io.on("connection", (client) => {
   client.on("disconnect", () => {
     console.log("user 1 disconnected");
   })
+
+  client.emit("notice", { message: "this is the data send by server"});
 });
 
 app.get("/", (req, res) => {
