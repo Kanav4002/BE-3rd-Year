@@ -1,71 +1,93 @@
 const express = require("express");
 const app = express();
 const http = require("http");
-const server = http.createServer(app);
 const cors = require("cors");
-const io = require('socket.io')(server,{
-  cors: {
-    origin: ["http://localhost:3000"],
-    methods: "GET, POST"
+const server = http.createServer(app);
+const socket = require("socket.io");
+const {v4:uuid} = require("uuid");
+const io = socket(server,{
+  cors:{
+    origin:"http://localhost:3000",
   }
 });
-const path = require("path");
 const PORT = 4000;
+const path = require("path");
 
-app.use(cors());
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname,"public")))
 
-// "username" : "socket.io"
-const Users = {
+//{ 
+// "username":"socket.id"
+// "username2":socket.id
+// }
+const Users = {};
 
-};
+//  post - > {
+  // id -> uuid()  
+  // author  -> username
+  // content  ->string
+  // likes -> [username]
+  // createdAt -> date
+// }
+let Posts = []
 
-const Posts = []
-
-
-io.on('connection', client => {
-  console.log("server side connection",client.id);
-
+io.on("connection",(client)=>{
+  console.log("User 1 connected -> ",client.id);
+  
   // register user
-  client.on("register", (username) => {
-    if (Users[username]) {
-      return;
-    }
-    Users[username] = client.id
+  client.on("register",(username)=>{
+    Users[username] = socket.id
   })
+  
+})
 
-  // client.on('disconnect', () => {
-  //   console.log("user 1 disconnected");
-  //  });
-
-  //  client.emit("notice", { message: "this is the data send by the server" });
-
-  //  client.on("client-event", (data1, data2, data3) => {
-  //   console.log(data1, data2, data3);
-  //  });
-});
-
-app.get("/", (req, res) => {
-  res.send("hello");
-});
-
-app.post("/create", async(req, res) => {
+app.post("/post/create",async (req,res)=>{
   try {
-    const { username, content } = req.body;
+    const {username,content} = req.body;
     const post = {
-      author: Users[username],
+      id:uuid(),
+      author:username,
       content,
-      likes: [],
+      likes:[],
       createdAt: new Date()
     }
-    // opposite of push
     Posts.unshift(post);
-    res.status(201).json({ post: Posts });
-  } catch(error) {
-    res.status(400).json({ message: error.message });
+    res.status(201).json({posts:Posts})
+  } catch (error) {
+    res.status(401).json({message:error.message})
   }
+})
+
+app.post("/post/like/:id/:username",(req,res)=>{
+  try {
+    const {id,username} = req.params;
+    let author;
+    let content;
+    Posts = Posts.map((post)=>{
+      if(post.id==id){
+        author = post.author;
+        content = post.content;
+        post.likes.push(username)
+      }
+      return post;
+    })
+    io.to(Users[author]).emit("noticefication",`${username} liked your post ${content}`)
+    res.status(200).json({posts:Posts});
+  } catch (error) {
+    res.status(402).json({message:error.message})
+  }
+})
+
+app.get("/post/all",(req,res)=>{
+  res.status(200).json({posts:Posts})
+})
+
+app.get("/", (req, res) => {
+  res.send("server running");
 });
+
+
 
 server.listen(PORT, () => console.log("Server running on port " + PORT));
